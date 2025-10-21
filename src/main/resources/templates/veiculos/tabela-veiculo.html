@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tabela de veículos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link th:href="@{/css/tabelaVeiculoCss.css}" rel="stylesheet">
+</head>
+<body>
+    <ul class="nav nav-tabs bg-dark">
+        <li class="nav-item dropdown bg">
+            <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu</a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" th:href="@{/home}">Voltar</a></li>
+            </ul>
+        </li>
+    </ul>
+    
+    <h2>Veículos registrados</h2>
+
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show m-3" role="alert">
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-bordered table-light">
+            <thead>
+                <tr class="tabela">
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Cor</th>
+                    <th>Câmbio</th>
+                    <th>Ano de fabricação</th>
+                    <th>Acessórios</th>
+                    <th>Quilometragem</th>
+                    <th>Condição do veículo</th>
+                    <th>Manutenção do veículo</th>
+                    <th>Preço do veículo</th>
+                    <th>Garantia</th>
+                    <th>Registrado por</th>
+                    <th>Data de registro</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(registros)}">
+                    <td colspan="14" class="text-center">Nenhum veículo registrado</td>
+                </tr>
+                <th:block th:each="registro : ${registros}">
+                    <tr th:each="veiculo : ${registro.veiculos}">
+                        <td th:text="${veiculo.MarcaVeiculo}">Marca</td>
+                        <td th:text="${veiculo.ModeloVeiculo}">Modelo</td>
+                        <td th:text="${veiculo.CorVeiculo}">Cor</td>
+                        <td th:text="${veiculo.CambioVeiculo}">Câmbio</td>
+                        <td th:text="${veiculo.AnoVeiculo}">Ano</td>
+                        <td th:text="${veiculo.Acessorios}">Acessórios</td>
+                        <td th:text="${#numbers.formatDecimal(veiculo.Quilometragem, 0, 2)}">Quilometragem</td>
+                        <td th:text="${veiculo.CondicaoVeiculo}">Condição</td>
+                        <td th:text="${veiculo.StatusManutencao}">Manutenção</td>
+                        <td th:text="${'R$ ' + #numbers.formatDecimal(veiculo.PrecoVeiculo, 0, 2)}">Preço</td>
+                        <td th:text="${veiculo.Garantia}">Garantia</td>
+                        <td th:text="${registro.funcionario.NomeFuncionario}">Funcionário</td>
+                        <td th:text="${registro.DataRegistro.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy'))}">Data</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger btnExcluir" 
+                                    th:attr="data-id=${veiculo.idVeiculo}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmModal">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </th:block>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja excluir este veículo?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="formExcluir" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="botoes">
+        <a th:href="@{/veiculos/registro}" class="btn btn-primary">Registro veículo</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalElement = document.getElementById('confirmModal');
+            const formExcluir = document.getElementById('formExcluir');
+            
+            modalElement.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const veiculoId = button.getAttribute('data-id');
+                formExcluir.action = '/veiculos/excluir/' + veiculoId;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registro de veículo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" 
+          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link th:href="@{/css/veiculoRegistro.css}" rel="stylesheet">
+</head>
+<body>
+    <ul class="nav nav-tabs bg-dark">
+        <li class="nav-item dropdown bg">
+            <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu</a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" th:href="@{/home}">Voltar</a></li>
+                <li><a class="dropdown-item" href="#" id="btn-limpar">Limpar campos</a></li>
+            </ul>
+        </li>
+    </ul>
+    
+    <header><h2>Registro de veículos</h2></header>
+    
+    <div class="container my-5">
+        <div class="align-items-center">
+            <div class="row">
+                <div class="col-md-4 mx-auto">
+                    <section>
+                        <form th:action="@{/veiculos/registro/pagina1}" th:object="${veiculo}" method="post" id="formVeiculo">
+                            
+                            <div class="mb-3">
+                                <label for="marca" class="form-label">Marca:</label>
+                                <input type="text" class="form-control" th:field="*{MarcaVeiculo}" id="marca"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('MarcaVeiculo')}" th:errors="*{MarcaVeiculo}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="modelo" class="form-label">Modelo:</label>
+                                <input type="text" class="form-control" th:field="*{ModeloVeiculo}" id="modelo"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('ModeloVeiculo')}" th:errors="*{ModeloVeiculo}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cor" class="form-label">Cor:</label>
+                                <input type="text" class="form-control" th:field="*{CorVeiculo}" id="cor"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('CorVeiculo')}" th:errors="*{CorVeiculo}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cambio" class="form-label">Câmbio:</label>
+                                <input type="text" class="form-control" th:field="*{CambioVeiculo}" id="cambio"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('CambioVeiculo')}" th:errors="*{CambioVeiculo}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="anoFabricacao" class="form-label">Ano de fabricação:</label>
+                                <input type="number" class="form-control" th:field="*{AnoVeiculo}" id="fabricacao" placeholder="Ex: 2024"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('AnoVeiculo')}" th:errors="*{AnoVeiculo}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="acessorio" class="form-label">Acessórios:</label>
+                                <textarea class="form-control" th:field="*{Acessorios}" id="acessorio"></textarea>
+                                <div class="text-danger" th:if="${#fields.hasErrors('Acessorios')}" th:errors="*{Acessorios}"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="quilometragem" class="form-label">Quilometragem:</label>
+                                <input type="number" step="0.01" class="form-control" th:field="*{Quilometragem}" id="quilometragem"/>
+                                <div class="text-danger" th:if="${#fields.hasErrors('Quilometragem')}" th:errors="*{Quilometragem}"></div>
+                            </div>
+
+                            <nav class="text-center">
+                                <button type="submit" class="btn btn-primary btn-customVeiculo">Próxima página</button>
+                            </nav>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formVeiculo');
+            document.getElementById('btn-limpar').addEventListener('click', function(e) {
+                e.preventDefault();
+                form.reset();
+            });
+        });
+    </script>
+</body>
+</html>

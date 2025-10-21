@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+    <head>
+        <title>Cadastro Cliente</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link href="/css/clienteRegistro.css" rel="stylesheet" th:href="@{/css/clienteRegistro.css}">
+    </head>
+    <body>
+        <ul class="nav nav-tabs bg-dark">
+            <li class="nav-item dropdown bg">
+                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu</a>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" th:href="@{/home}">Voltar</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-limpar">Limpar campos</a></li>
+                </ul>
+            </li>
+        </ul>
+        <header><h2>Registro de clientes</h2></header>
+        <div class="container my-5">
+            <div class="align-items-center">
+                <div class="row">
+                    <div class="col-md-4 mx-auto">
+                        <section>
+                            <form th:action="@{/clientes/salvar}" th:object="${cliente}" method="post" id="clienteForm">
+                                <div class="mb-3">
+                                    <label for="nome" class="form-label">Nome: </label>
+                                    <input type="text" class="form-control" id="nome" th:field="*{NomeCliente}"/>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('NomeCliente')}" th:errors="*{NomeCliente}"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telefone" class="form-label">Telefone: </label>
+                                    <input type="text" class="form-control" id="telefone" th:field="*{Telefone}"/>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('Telefone')}" th:errors="*{Telefone}"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cpf" class="form-label">CPF: </label>
+                                    <input type="text" class="form-control" id="cpf" th:field="*{CPF}"/>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('CPF')}" th:errors="*{CPF}"></div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="submit" class="btn btn-primary btn-custom mb-3" value="Registrar">
+                                </div>
+                                <div id="alerta-sucesso" class="alert alert-success d-flex align-items-center d-none" role="alert">Cliente registrado.</div>
+                            </form>
+                            
+                             <div th:if="${mensagemSucesso}" class="alert alert-success text-center" role="alert">
+                                    <span th:text="${mensagemSucesso}"></span>
+                             </div>
+                            
+                            <nav class="text-center">
+                                <a th:href="@{/clientes/lista}" class="btn btn-outline-primary">Tabela de clientes</a>
+                            </nav>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script>
+            function limparCampos() {
+                document.getElementById("clienteForm").reset();
+                document.getElementById("clienteForm").classList.remove("was-validated");
+                document.getElementById("alerta-sucesso").classList.add("d-none");
+            }
+
+            document.getElementById("btn-limpar").addEventListener("click", (e) => {
+                e.preventDefault();
+                limparCampos();
+            });
+        </script>
+    </body>
+</html>

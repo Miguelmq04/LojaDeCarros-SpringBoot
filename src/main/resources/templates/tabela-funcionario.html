@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link href="/css/tabelaFuncionarioCss.css" rel="stylesheet" th:href="@{/css/tabelaFuncionarioCss.css}">
+        <title>Tabela de funcionários</title>
+    </head>
+    <body>
+        <ul class="nav nav-tabs bg-dark">
+           <li class="nav-item dropdown bg">
+                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Menu</a>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" th:href="@{/home}">Voltar</a></li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Funcionários registrados</h2>
+        <div class="table-container">
+            <table class="table table-bordered table-light">
+                <thead>
+                    <tr class="tabela">
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>CPF</th>
+                        <th>Cargo</th>
+                        <th>Nome de login</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="funcionario : ${listaFuncionarios}">
+                        <td th:text="${funcionario.NomeFuncionario}"></td>
+                        <td th:text="${funcionario.Telefone}"></td>
+                        <td th:text="${funcionario.CPF}"></td>
+                        <td th:text="${funcionario.cargos[0].tipoCargo.Descricao}"></td>
+                        <td th:text="${funcionario.login.Login}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="registroFuncionario">
+            <a th:href="@{/funcionarios/registro}" class="btn btn-primary btn-lg">Registro funcionário</a>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
+</html>

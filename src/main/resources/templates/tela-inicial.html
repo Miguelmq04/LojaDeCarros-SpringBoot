@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Tela inicial</title>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" 
+              rel="stylesheet" 
+              integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" 
+              crossorigin="anonymous">
+        <link th:href="@{/css/telaInicial.css}" rel="stylesheet">
+    </head>
+    <body>
+        <h2 class="text-center" style="margin-top: 40px;">Bem vindo!</h2>
+        <div class="container my-5">
+            <section>
+                <nav class="btn-customMenu">
+                    <div class="text-center mb-3">
+                        <a th:href="@{/veiculos/registro}" class="btn btn-primary btn-custom">
+                            Registro de veículos
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/vendas/registro}" class="btn btn-primary btn-custom">
+                            Registro de vendas
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/funcionarios/registro}" class="btn btn-primary btn-custom">
+                            Registro de funcionários
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/clientes/registro}" class="btn btn-primary btn-custom">
+                            Registro de clientes
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/veiculos/lista}" class="btn btn-primary btn-custom">
+                            Tabela de veículos
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/vendas/lista}" class="btn btn-primary btn-custom">
+                            Tabela de vendas
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/funcionarios/lista}" class="btn btn-primary btn-custom">
+                            Tabela de funcionários
+                        </a>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a th:href="@{/clientes/lista}" class="btn btn-primary btn-custom">
+                            Tabela de clientes
+                        </a>
+                    </div>
+                </nav>
+            </section>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+                crossorigin="anonymous"></script>
+    </body>
+</html>
