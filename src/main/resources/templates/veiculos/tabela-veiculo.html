@@ -20,17 +20,6 @@
     </ul>
     
     <h2>Veículos registrados</h2>
-
-    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show m-3" role="alert">
-        <span th:text="${mensagemSucesso}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-        <span th:text="${mensagemErro}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <div class="table-container">
         <table class="table table-bordered table-light">
             <thead>
@@ -69,7 +58,7 @@
                         <td th:text="${'R$ ' + #numbers.formatDecimal(veiculo.PrecoVeiculo, 0, 2)}">Preço</td>
                         <td th:text="${veiculo.Garantia}">Garantia</td>
                         <td th:text="${registro.funcionario.NomeFuncionario}">Funcionário</td>
-                        <td th:text="${registro.DataRegistro.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy'))}">Data</td>
+                        <td th:text="${registro.DataRegistro != null ? registro.DataRegistro.format(T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy')) : 'Sem data'}">Data</td>
                         <td>
                             <button class="btn btn-sm btn-outline-danger btnExcluir" 
                                     th:attr="data-id=${veiculo.idVeiculo}"

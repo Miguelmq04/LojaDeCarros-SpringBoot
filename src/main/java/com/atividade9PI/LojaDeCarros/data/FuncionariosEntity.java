@@ -4,6 +4,7 @@ package com.atividade9PI.LojaDeCarros.data;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,7 +51,7 @@ public class FuncionariosEntity {
     @OneToMany(mappedBy = "funcionario")
     private List<RegistroVendaEntity> registrosVenda;
 
-    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @NotNull(message = "Funcionário é obrigatório.")
     private List<CargoEntity> cargos = new ArrayList<>();
 }

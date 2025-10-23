@@ -3,8 +3,8 @@ package com.atividade9PI.LojaDeCarros.controller;
 import com.atividade9PI.LojaDeCarros.data.FuncionariosEntity;
 import com.atividade9PI.LojaDeCarros.data.RegistroVeiculoEntity;
 import com.atividade9PI.LojaDeCarros.data.VeiculoEntity;
-import com.atividade9PI.LojaDeCarros.repository.FuncionarioRepository;
-import com.atividade9PI.LojaDeCarros.repository.RegistroVeiculoRepository;
+import com.atividade9PI.LojaDeCarros.service.FuncionarioService;
+import com.atividade9PI.LojaDeCarros.service.RegistroVeiculoService;
 import com.atividade9PI.LojaDeCarros.service.VeiculoService;
 import com.atividade9PI.LojaDeCarros.validation.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +30,10 @@ public class VeiculoController {
     private VeiculoService veiculoService;
 
     @Autowired
-    private FuncionarioRepository funcionariosRepository;
+    private FuncionarioService funcionariosService;
 
     @Autowired
-    private RegistroVeiculoRepository registroVeiculoRepository;
+    private RegistroVeiculoService registroVeiculoService;
 
     @GetMapping("/registro")
     public String mostrarFormularioPagina1(Model model) {
@@ -73,7 +73,7 @@ public class VeiculoController {
             return "redirect:/veiculos/registro";
         }
 
-        List<FuncionariosEntity> funcionarios = funcionariosRepository.findAll();
+        List<FuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
         model.addAttribute("funcionarios", funcionarios);
         return "veiculos/veiculo-cadastroPg2";
     }
@@ -88,46 +88,33 @@ public class VeiculoController {
 
         if (funcionarioId == null || funcionarioId == 0) {
             model.addAttribute("erroFuncionario", "Selecione o funcionário que está fazendo o registro");
-            List<FuncionariosEntity> funcionarios = funcionariosRepository.findAll();
+            List<FuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
             model.addAttribute("funcionarios", funcionarios);
             return "veiculos/veiculo-cadastroPg2";
         }
         
         if (result.hasErrors()) {
-            List<FuncionariosEntity> funcionarios = funcionariosRepository.findAll();
+            List<FuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
             model.addAttribute("funcionarios", funcionarios);
             return "veiculos/veiculo-cadastroPg2";
         }
 
         try {
-            FuncionariosEntity funcionario = funcionariosRepository.findById(funcionarioId)
-                    .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
-
-            VeiculoEntity veiculoSalvo = veiculoService.criarVeiculo(veiculo);
-
-            RegistroVeiculoEntity registro = new RegistroVeiculoEntity();
-            registro.setFuncionario(funcionario);
-            registro.setDataRegistro(LocalDate.now());
-            
-            List<VeiculoEntity> veiculos = new ArrayList<>();
-            veiculos.add(veiculoSalvo);
-            registro.setVeiculos(veiculos);
-            
-            registroVeiculoRepository.save(registro);
+            VeiculoEntity veiculoSalvo = registroVeiculoService.criarRegistroVeiculo(veiculo, funcionarioId);
 
             sessionStatus.setComplete();
             
             model.addAttribute("veiculo", new VeiculoEntity());
             model.addAttribute("mensagemSucesso", "Veículo registrado com sucesso!");
             
-            List<FuncionariosEntity> funcionarios = funcionariosRepository.findAll();
+            List<FuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
             model.addAttribute("funcionarios", funcionarios);
             
             return "veiculos/veiculo-cadastroPg2";
             
         } catch (Exception e) {
             model.addAttribute("mensagemErro", "Erro ao registrar veículo: " + e.getMessage());
-            List<FuncionariosEntity> funcionarios = funcionariosRepository.findAll();
+            List<FuncionariosEntity> funcionarios = funcionariosService.listarFuncionarios();
             model.addAttribute("funcionarios", funcionarios);
             return "veiculos/veiculo-cadastroPg2";
         }
@@ -135,7 +122,7 @@ public class VeiculoController {
     
     @GetMapping("/lista")
     public String mostrarTabela(Model model) {
-        List<RegistroVeiculoEntity> registros = registroVeiculoRepository.findAll();
+        List<RegistroVeiculoEntity> registros = registroVeiculoService.listarRegistrosVeiculo();
         model.addAttribute("registros", registros);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

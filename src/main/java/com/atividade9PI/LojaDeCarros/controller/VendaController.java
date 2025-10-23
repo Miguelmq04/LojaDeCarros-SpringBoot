@@ -4,10 +4,10 @@ import com.atividade9PI.LojaDeCarros.data.ClienteEntity;
 import com.atividade9PI.LojaDeCarros.data.FuncionariosEntity;
 import com.atividade9PI.LojaDeCarros.data.RegistroVendaEntity;
 import com.atividade9PI.LojaDeCarros.data.VeiculoEntity;
-import com.atividade9PI.LojaDeCarros.repository.ClienteRepository;
-import com.atividade9PI.LojaDeCarros.repository.FuncionarioRepository;
-import com.atividade9PI.LojaDeCarros.repository.RegistroVendaRepository;
-import com.atividade9PI.LojaDeCarros.repository.VeiculoRepository;
+import com.atividade9PI.LojaDeCarros.service.ClienteService;
+import com.atividade9PI.LojaDeCarros.service.FuncionarioService;
+import com.atividade9PI.LojaDeCarros.service.RegistroVendaService;
+import com.atividade9PI.LojaDeCarros.service.VeiculoService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,23 +27,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class VendaController {
 
     @Autowired
-    private RegistroVendaRepository registroVendaRepository;
+    private RegistroVendaService registroVendaService;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
     @Autowired
-    private FuncionarioRepository funcionariosRepository;
+    private FuncionarioService funcionariosService;
 
     @Autowired
-    private VeiculoRepository veiculoRepository;
+    private VeiculoService veiculoService;
 
     @GetMapping("/registro")
     public String mostrarFormularioVenda(Model model) {
         model.addAttribute("vendas", new RegistroVendaEntity());
-        model.addAttribute("clientes", clienteRepository.findAll());
-        model.addAttribute("funcionarios", funcionariosRepository.findAll());
-        model.addAttribute("veiculos", veiculoRepository.findAll());
+        model.addAttribute("clientes", clienteService.listarClientes());
+        model.addAttribute("funcionarios", funcionariosService.listarFuncionarios());
+        model.addAttribute("veiculos", veiculoService.listarVeiculos());
         return "venda-registro";
     }
 
@@ -76,25 +76,33 @@ public class VendaController {
         
         
         if (temErro) {
-            model.addAttribute("clientes", clienteRepository.findAll());
-            model.addAttribute("funcionarios", funcionariosRepository.findAll());
-            model.addAttribute("veiculos", veiculoRepository.findAll());
+            model.addAttribute("clientes", clienteService.listarClientes());
+            model.addAttribute("funcionarios", funcionariosService.listarFuncionarios());
+            model.addAttribute("veiculos", veiculoService.listarVeiculos());
             return "venda-registro";
         }
 
-        ClienteEntity cliente = clienteRepository.findById(idCliente)
+        ClienteEntity cliente = clienteService.listarClientes().stream()
+                .filter(c -> c.getIdCliente().equals(idCliente))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Cliente inválido: " + idCliente));
-        FuncionariosEntity funcionario = funcionariosRepository.findById(idFuncionario)
+        
+        FuncionariosEntity funcionario = funcionariosService.listarFuncionarios().stream()
+                .filter(f -> f.getIdFuncionario().equals(idFuncionario))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Funcionário inválido: " + idFuncionario));
-        VeiculoEntity veiculo = veiculoRepository.findById(idVeiculo)
-                .orElseThrow(() -> new IllegalArgumentException("Veículo inválido: " + idVeiculo));
+        
+        VeiculoEntity veiculo = veiculoService.getVeiculoId(idVeiculo);
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo inválido: " + idVeiculo);
+        }
 
         venda.setCliente(cliente);
         venda.setFuncionario(funcionario);
         venda.setVeiculosVendidos(List.of(veiculo));
         venda.setDataRegistro(LocalDate.now());
 
-        registroVendaRepository.save(venda);
+        registroVendaService.criarVenda(venda);
 
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Venda registrada com sucesso!");
         return "redirect:/vendas/cadastro";
@@ -102,7 +110,7 @@ public class VendaController {
 
     @GetMapping("/lista")
     public String listarVendas(Model model) {
-        List<RegistroVendaEntity> vendas = registroVendaRepository.findAll();
+        List<RegistroVendaEntity> vendas = registroVendaService.listarVendas();
         model.addAttribute("vendas", vendas);
         return "tabela-vendas";
     }

@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @Controller
 public class LoginController {
-
+    
     @Autowired
     private LoginFuncionarioService loginService;
     
@@ -30,13 +28,13 @@ public class LoginController {
             @Valid @ModelAttribute("loginFuncionario") LoginFuncionarioEntity loginFuncionario, 
             BindingResult result, 
             Model model) {
-
+        
         if (!result.hasFieldErrors("Login") && !result.hasFieldErrors("Senha")) {
             boolean autenticado = loginService.autenticar(
                 loginFuncionario.getLogin(), 
                 loginFuncionario.getSenha()
             );
-
+            
             if (!autenticado) {
                 result.rejectValue("Login", "error.loginFuncionario", "Login ou senha inválidos!");
             }
@@ -45,9 +43,7 @@ public class LoginController {
         if (result.hasErrors()) {
             return "Login";
         }
-
+        
         return "redirect:/home";
     }
 }
-
-

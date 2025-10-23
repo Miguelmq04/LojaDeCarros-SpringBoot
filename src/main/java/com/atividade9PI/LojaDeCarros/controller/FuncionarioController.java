@@ -1,10 +1,9 @@
 package com.atividade9PI.LojaDeCarros.controller;
-
 import com.atividade9PI.LojaDeCarros.data.CargoEntity;
 import com.atividade9PI.LojaDeCarros.data.FuncionariosEntity;
 import com.atividade9PI.LojaDeCarros.data.TipoCargoEntity;
-import com.atividade9PI.LojaDeCarros.repository.TipoCargoRepository;
 import com.atividade9PI.LojaDeCarros.service.FuncionarioService;
+import com.atividade9PI.LojaDeCarros.service.TipoCargoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,46 +15,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 @Controller
 @RequestMapping("/funcionarios")
 public class FuncionarioController {
-
     @Autowired
     private FuncionarioService funcionarioService;
-
     @Autowired
-    private TipoCargoRepository tipoCargoRepository;
-
+    private TipoCargoService tipoCargoService;
     @GetMapping("/lista")
     public String listarFuncionarios(Model model) {
         model.addAttribute("listaFuncionarios", funcionarioService.listarFuncionarios());
         return "tabela-funcionario";
     }
-
     @GetMapping("/registro")
     public String mostrarFormularioCadastro(Model model) {
         model.addAttribute("funcionario", new FuncionariosEntity());
-        model.addAttribute("listaTiposCargo", tipoCargoRepository.findAll());
+        model.addAttribute("listaTiposCargo", tipoCargoService.listarTipoCargos());
         return "funcionario-registro";
     }
-
     @PostMapping("/salvar")
     public String salvarFuncionario(@Valid @ModelAttribute("funcionario") FuncionariosEntity funcionario ,BindingResult result, 
             @RequestParam(value = "cargoSelecionado", required = false) Integer idTipoCargo, Model model, RedirectAttributes redirectAttributes) {
         
         if (idTipoCargo == null) {
-            model.addAttribute("listaTiposCargo", tipoCargoRepository.findAll());
+            model.addAttribute("listaTiposCargo", tipoCargoService.listarTipoCargos());
             model.addAttribute("erroCargo", "Por favor, selecione o cargo do funcionário.");
             return "funcionario-registro";
         }  
         
         if (result.hasErrors()) {
-            model.addAttribute("listaTiposCargo", tipoCargoRepository.findAll());
+            model.addAttribute("listaTiposCargo", tipoCargoService.listarTipoCargos());
             return "funcionario-registro";
         }
         
-         TipoCargoEntity tipoCargo = tipoCargoRepository.findById(idTipoCargo)
+        TipoCargoEntity tipoCargo = tipoCargoService.listarTipoCargos().stream()
+            .filter(tc -> tc.getIdTipoCargo().equals(idTipoCargo))
+            .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Tipo de cargo inválido: " + idTipoCargo));
         
         CargoEntity cargo = new CargoEntity();
